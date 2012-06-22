@@ -5,7 +5,7 @@ var vows = require('vows'),
 
 vows.describe('CRUD').addBatch({
 	'Crud set memory': {
-		topic: crud.memory.set([{id: 1, title: 'Test', author: 'test'}]),
+		topic: crud.memory.set([{book: []}]),
 
 		'set memory with content': function ( topic ) {
 			assert.equal( topic, true );
@@ -21,10 +21,26 @@ vows.describe('CRUD').addBatch({
 	},
 
     'Crud get memory': {
-		topic: crud.memory.set([{id: 1, title: 'Test', author: 'test'}]),
+		topic: crud.memory.set([{book: []}]),
 
         'get memory with content': function ( topic ) {
-            assert.deepEqual( crud.memory.get(), [{id: 1, title: 'Test', author: 'test'}] );
+            assert.deepEqual( crud.memory.get(), [{book: []}] );
+        },
+    },
+
+    'Crud insert data in the memory': {
+        topic: crud.memory.set([{book: []}]),
+
+        'insert data': function ( topic ) {
+            assert.equal( crud.insert({collection: 'book', data: {id: 1, title: 'Javascript goodparts'}}), true );
+        },
+    },
+
+    'Crud remove item of memory': {
+        topic: crud.memory.set([{book: []}]),
+
+        'remove data': function ( topic ) {
+            assert.equal( crud.remove({collection: 'book', filter: {id: 1}}), true );    
         },
     }
 }).run();
