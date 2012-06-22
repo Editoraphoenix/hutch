@@ -109,22 +109,33 @@ var CRUD = (function () {
 
 			settings = settings || {};
 
-			if ( settings ) {
-				var result = underscore.map( memory, function ( collections ) {
-					if ( underscore.has( collections, settings['collection'] ) ) {
-						return underscore.map( collections, function ( collection ) {
-							for ( var filter in settings['filter'] ) {
-								if ( underscore.has( collection, filter ) && collection[ filter ] === settings['filter'][ filter ] ) {
-									return collections;
-								}
-							}
-						});
-					}
-				});
+			if ( settings && 'collection' in settings ) {
+                var output = false,
+                    _m = memory;
 
-				if ( !underscore.isEmpty( underscore.compact( result ) ) ) {
-					output = result;
-				}
+                for ( var c in _m ) {
+                    if ( settings['collection'] in _m[ c ] ) {
+                        var collection = _m[ c ][ settings['collection' ] ];
+                        
+                        if ( 'filter' in settings ) {
+                            for ( var s in collection ) {
+                                for ( var l in collection[ s ] ) {
+                                    for ( var f in settings['filter'] ) {
+                                        if ( f === l && collection[ s ][ l ] === settings['filter'][f] ) {
+                                            if ( delete memory[ c ][ settings['collection'] ][ s ] ) {
+                                                memory[ c ][ settings['collection'] ] = underscore.compact( 
+                                                    memory[c][ settings['collection'] ] 
+                                                );    
+                                                output = true;
+                                            }
+                                        }    
+                                    }    
+                                }    
+                            }    
+                        }
+                    }    
+                }
+                
 			}
 
 			return output;		
